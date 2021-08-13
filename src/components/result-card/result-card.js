@@ -16,10 +16,6 @@ const { Text } = Typography
 export const SearchResultCard = ({ index, result, openModalHandler }) => {
   const [currentTab, setCurrentTab] = useState('overview')
 
-  const flipCardHandler = () => {
-    console.log('flip it!')
-  }
-
   const tabs = {
     'overview': { title: 'Overview',         content: <OverviewTab result={ result } /> },
     'studies':  { title: `Studies`,          content: <StudiesTab result={ result } /> },
@@ -38,7 +34,7 @@ export const SearchResultCard = ({ index, result, openModalHandler }) => {
         tabProps={{size: 'small'}}
         activeTabKey={currentTab}
         onTabChange={key => setCurrentTab(key)}
-        extra={ <ViewIcon onClick={ flipCardHandler } /> }
+        extra={ <ViewIcon onClick={ openModalHandler } /> }
         actions={ [<br />] }
       >
         { tabContents[currentTab] }
