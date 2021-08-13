@@ -45,7 +45,7 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    publicPath: process.env.NODE_ENV === 'production' ? `https://helxplatform.github.io/search-ui/` : 'https://localhost:8080/',
+    publicPath: process.env.NODE_ENV === 'production' ? `https://helxplatform.github.io/search-ui/` : 'http://localhost:8080/',
     assetModuleFilename: 'images/[hash][ext][query]',
   },
 
