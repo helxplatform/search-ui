@@ -8,9 +8,9 @@ Visit [helxplatform.github.io/search-ui/](https://helxplatform.github.io/search-
 
 # Consume Search as a Remote Module
 
-Suppose you have an application called "helx" that will consume this Search UI as a remote module. In the Webpack config for helx, import `ModuleFederationPlugin` and configure an instance to consume `remoteEntry.js` from "helx".
+Suppose you have an application called "helx" that will consume this Search UI as a remote module. In the Webpack config for helx, import `ModuleFederationPlugin` and configure an instance to consume, at _runtime_, the exposed [`remoteEntry.js`](https://helxplatform.github.io/search-ui/remoteEntry.js), which is transpiled and minified module. The name of this file is defined in [this module's Webpack config](https://github.com/helxplatform/search-ui/blob/main/webpack.config.js#L20)
 
-In the configuration example below, we'll name this remote module `search`. Additionally, we can specify shared modules to prevent loading duplicate dependencies.
+In the configuration example below, we'll give this remote remote module the name `search`. Additionally, we can specify any shared modules to avoid loading duplicate dependencies.
 
 ```js
 // webpack.config.js
@@ -22,7 +22,6 @@ module.exports = {
     new ModuleFederationPlugin({
       name: 'helx',
       library: { type: 'var', name: 'helx' },
-      filename: 'remoteEntry.js',
       remotes: {
         search: 'search',
       },
@@ -36,9 +35,12 @@ module.exports = {
 }
 ```
 
-Then in the "helx" application, this search module can be consumed. For example, if "helx" is a React application, one could use `React.lazy` along with `import()`, as follows:
+
+Now, within the "helx" application itself, this search module can be consumed. For example, if "helx" is a React application, one could use `React.lazy` along with `import()`, as follows:
 
 ```js
+// app.js
+
 const SearchUI = React.lazy(() => import('search/App'))
 ```
 
