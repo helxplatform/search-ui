@@ -17,6 +17,9 @@
   align-items: center;
   padding: 0 !important;
   filter: drop-shadow(0 0 8px #00000033);
+  position: sticky;
+  top: 0;
+  z-index: 9;
 }
 
 .results-container {
