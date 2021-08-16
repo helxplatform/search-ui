@@ -14,7 +14,11 @@ const plugins = [
     template: './src/index.html',
     favicon: './src/images/favicon.png',
   }),
-  new ModuleFederationPlugin({
+]
+
+if (process.env.NODE_ENV === 'production') {
+  mode = 'production'
+  const moduleFederationPlugin = new ModuleFederationPlugin({
     name: 'search',
     library: { type: 'var', name: 'search' },
     filename: 'remoteEntry.js',
@@ -26,11 +30,8 @@ const plugins = [
       'react-dom': { singleton: true, requiredVersion: '^17.0.0' },
       'antd': { singleton: true, requiredVersion: '^4.16.9' },
     },
-  }),
-]
-
-if (process.env.NODE_ENV === 'production') {
-  mode = 'production'
+  })
+  plugins.push(moduleFederationPlugin)
 }
 if (process.env.SERVE) {
   plugins.push(new ReactRefreshWebpackPlugin())
