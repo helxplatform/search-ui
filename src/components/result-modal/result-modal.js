@@ -1,89 +1,16 @@
 import { useEffect, useState } from 'react'
-import { List, Menu, Modal, Space, Tag, Typography } from 'antd'
+import { Menu, Modal, Space, Typography } from 'antd'
 import './result-modal.css'
-import { KnowledgeGraphs, useHelxSearch } from '../'
-import { Link } from '../link'
+import { useHelxSearch } from '../'
+import { OverviewTab, StudiesTab, KnowledgeGraphsTab, TranQLTab } from './tabs'
+import {
+  InfoCircleOutlined as OverviewIcon,
+  BookOutlined as StudiesIcon,
+  ShareAltOutlined as KnowledgeGraphsIcon,
+  CodeOutlined as TranQLIcon,
+} from '@ant-design/icons'
 
 const { Text, Title } = Typography
-const { CheckableTag: CheckableFacet } = Tag
-
-const OverviewTab = ({ result }) => {
-  return (
-    <Space direction="vertical">
-      <Title level={ 4 }>Overview</Title>
-      <Text>{ result.description }</Text>
-    </Space>
-  )
-}
-
-const StudiesTab = ({ studies }) => {
-  const [facets, setFacets] = useState([])
-  const [selectedFacets, setSelectedFacets] = useState([])
-  const [loading, setLoading] = useState(true)
-
-  const handleSelectFacet = (facet, checked) => {
-    const newSelection = new Set(selectedFacets)
-    if (newSelection.has(facet)) {
-      newSelection.delete(facet)
-    } else {
-      newSelection.add(facet)
-    }
-    setSelectedFacets([...newSelection])
-  }
-
-  useEffect(() => {
-    setFacets(Object.keys(studies))
-    setSelectedFacets(Object.keys(studies))
-  }, [studies])
-
-  return (
-    <Space direction="vertical">
-      <Title level={ 4 }>Studies</Title>
-      <Space direction="horizontal" size="small">
-        {
-          facets.map(facet => studies[facet] && (
-            <CheckableFacet
-              key={ `search-facet-${ facet }` }
-              checked={ selectedFacets.includes(facet) }
-              onChange={ checked => handleSelectFacet(facet, checked) }
-              children={ `${ facet } (${studies[facet].length})` }
-            />
-          ))
-        }
-      </Space>
-      <List
-        className="studies-list"
-        dataSource={
-          Object.keys(studies)
-            .filter(facet => selectedFacets.includes(facet))
-            .reduce((arr, facet) => [...arr, ...studies[facet]], [])
-            .sort((s, t) => s.c_name < t.c_name ? -1 : 1)
-        }
-        renderItem={ item => (
-          <List.Item>
-            <div className="studies-list-item">
-              <Text className="study-name">
-                { item.c_name }{ ` ` }
-                (<Link to={ item.c_link }>{ item.c_id }</Link>)
-              </Text>
-              <Text className="variables-count">{ item.elements.length } variable{ item.elements.length === 1 ? '' : 's' }</Text>
-            </div>
-          </List.Item>
-        ) }
-      />
-   </Space>
-  )
-}
-
-const KnowledgeGraphsTab = ({ graphs }) => {
-  return (
-    <Space direction="vertical">
-      <Title level={ 4 }>Knowledge Graphs</Title>
-      <KnowledgeGraphs graphs={ graphs } />
-    </Space>    
-  )
-}
-
 
 export const SearchResultModal = ({ result, visible, closeHandler }) => {
   const [currentTab, setCurrentTab] = useState('overview')
@@ -113,9 +40,10 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
   }
 
   const tabs = {
-    'overview': { title: 'Overview',         content: <OverviewTab result={ result } />, },
-    'studies':  { title: `Studies`,          content: <StudiesTab studies={ studies } />, },
-    'kgs':      { title: `Knowledge Graphs`, content: <KnowledgeGraphsTab graphs={ graphs } />, },
+    'overview': { title: 'Overview',            icon: <OverviewIcon />,         content: <OverviewTab result={ result } />, },
+    'studies':  { title: 'Studies',             icon: <StudiesIcon />,          content: <StudiesTab studies={ studies } />, },
+    'kgs':      { title: 'Knowledge Graphs',    icon: <KnowledgeGraphsIcon />,  content: <KnowledgeGraphsTab graphs={ graphs } />, },
+    'tranql':   { title: 'TranQL',              icon: <TranQLIcon />,           content: <TranQLTab /> },
   }
 
   return (
@@ -125,21 +53,21 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
       onOk={ closeHandler }
       okText="Close"
       onCancel={ closeHandler }
-      width={ 800 }
+      width={ 1000 }
       style={{ top: 135 }}
       bodyStyle={{ padding: `0`, minHeight: `50vh` }}
       cancelButtonProps={{ hidden: true }}
     >
       <Space direction="horizontal" align="start">
         <Menu
-          style={{ width: 256, height: '100%' }}
+          style={{ width: 256 }}
           defaultSelectedKeys={ ['overview'] }
           mode="inline"
           theme="light"
         >
-          <Menu.Item key="overview" onClick={ () => setCurrentTab('overview') }>Overview</Menu.Item>
-          <Menu.Item key="studies" onClick={ () => setCurrentTab('studies') }>Studies</Menu.Item>
-          <Menu.Item key="kgs" onClick={ () => setCurrentTab('kgs') }>Knowledge Graphs</Menu.Item>
+          {
+            Object.keys(tabs).map(key => <Menu.Item key={ key } onClick={ () => setCurrentTab(key) }>{ tabs[key].icon } &nbsp; { tabs[key].title }</Menu.Item>)
+          }
         </Menu>
         <div className="modal-content-container" children={ tabs[currentTab].content } />
       </Space>
