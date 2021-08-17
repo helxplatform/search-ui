@@ -95,13 +95,17 @@ export const TranQLTab = ({ result }) => {
   const [translatorResponse, setTranslatorResponse] = useState('')
 
   const fetchGraph = async () => {
+    const headers = {
+      'Content-Type': 'text/plain',
+    }
     const config = {
-      headers: {
-        'Content-Type': 'text/plain',
-      }
+      method: 'POST',
+      url: 'https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=true',
+      data: JSON.parse(JSON.stringify(tranqlQuery)),
+      headers,
     }
     try {
-      const { data } = await axios.post(`https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=true`, tranqlQuery, config)
+      const { data } = await axios(config)
       if (!data) {
         console.log('no data')
         return
