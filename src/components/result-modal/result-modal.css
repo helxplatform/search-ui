@@ -1,8 +1,27 @@
+.ant-modal-body {}
+
+.ant-modal-body > .ant-space,
+.ant-modal-body > .ant-space > .ant-space-item:nth-child(2) {
+  box-sizing: border-box;
+  width: 100%;
+}
+
 .modal-content-container {
-  padding: 1rem;
+  width: 100%;
+  padding: 1rem 2rem 1rem 1rem;
   max-height: 600px;
   overflow-y:  auto;
   scrollbar-width: thin; /* firefox only */
   scrollbar-color: #00000022 transparent; /* firefox only */
   transition: scrollbar-color 250ms; /* firefox only */
+}
+
+.tab-content {}
+
+.tranql-query-textarea {
+  width: 100%;
+  background-color: var(--color-unc-gray);
+  font-family: monospace;
+  font-size: 90%;
+  min-height: 80px !important;
 }

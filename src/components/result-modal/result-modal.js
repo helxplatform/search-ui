@@ -1,18 +1,20 @@
-import { useEffect, useState } from 'react'
-import { List, Menu, Modal, Space, Tag, Typography } from 'antd'
+import { Fragment, useEffect, useState } from 'react'
+import { Input, List, Menu, Modal, Space, Tag, Typography } from 'antd'
 import './result-modal.css'
 import { KnowledgeGraphs, useHelxSearch } from '../'
 import { Link } from '../link'
 
 const { Text, Title } = Typography
+const { TextArea } = Input
+
 const { CheckableTag: CheckableFacet } = Tag
 
 const OverviewTab = ({ result }) => {
   return (
-    <Space direction="vertical">
+    <Fragment>
       <Title level={ 4 }>Overview</Title>
       <Text>{ result.description }</Text>
-    </Space>
+    </Fragment>
   )
 }
 
@@ -37,7 +39,7 @@ const StudiesTab = ({ studies }) => {
   }, [studies])
 
   return (
-    <Space direction="vertical">
+    <Fragment>
       <Title level={ 4 }>Studies</Title>
       <Space direction="horizontal" size="small">
         {
@@ -71,19 +73,34 @@ const StudiesTab = ({ studies }) => {
           </List.Item>
         ) }
       />
-   </Space>
+   </Fragment>
   )
 }
 
 const KnowledgeGraphsTab = ({ graphs }) => {
   return (
-    <Space direction="vertical">
+    <Fragment>
       <Title level={ 4 }>Knowledge Graphs</Title>
       <KnowledgeGraphs graphs={ graphs } />
-    </Space>    
+    </Fragment> 
   )
 }
 
+const sampleQuery = `select chemical_substance->gene->disease
+  from "/graph/gamma/quick"
+ where disease="asthma"`
+
+export const TranQLTab = ({ result }) => {
+  const { query } = useHelxSearch()
+  const [tranqlQuery, setTranqlQuery] = useState(sampleQuery)
+
+  return (
+    <Fragment>
+      <Title level={ 4 }>TranQL</Title>
+      <TextArea className="tranql-query-textarea" value={ tranqlQuery } rows="5" />
+    </Fragment>
+  )
+}
 
 export const SearchResultModal = ({ result, visible, closeHandler }) => {
   const [currentTab, setCurrentTab] = useState('overview')
@@ -116,6 +133,7 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
     'overview': { title: 'Overview',         content: <OverviewTab result={ result } />, },
     'studies':  { title: `Studies`,          content: <StudiesTab studies={ studies } />, },
     'kgs':      { title: `Knowledge Graphs`, content: <KnowledgeGraphsTab graphs={ graphs } />, },
+    'tranql':   { title: `TranQL`,           content: <TranQLTab /> },
   }
 
   return (
@@ -137,9 +155,9 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
           mode="inline"
           theme="light"
         >
-          <Menu.Item key="overview" onClick={ () => setCurrentTab('overview') }>Overview</Menu.Item>
-          <Menu.Item key="studies" onClick={ () => setCurrentTab('studies') }>Studies</Menu.Item>
-          <Menu.Item key="kgs" onClick={ () => setCurrentTab('kgs') }>Knowledge Graphs</Menu.Item>
+          {
+            Object.keys(tabs).map(key => <Menu.Item key={ key } onClick={ () => setCurrentTab(key) }>{ tabs[key].title }</Menu.Item>)
+          }
         </Menu>
         <div className="modal-content-container" children={ tabs[currentTab].content } />
       </Space>
