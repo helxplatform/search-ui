@@ -1,8 +1,10 @@
 import { Fragment, useEffect, useState } from 'react'
-import { Input, List, Menu, Modal, Space, Tag, Typography } from 'antd'
+import axios from 'axios'
+import { Button, Divider, Input, List, Menu, Modal, Space, Tag, Typography } from 'antd'
 import './result-modal.css'
 import { KnowledgeGraphs, useHelxSearch } from '../'
 import { Link } from '../link'
+import { RocketOutlined as QueryIcon } from '@ant-design/icons'
 
 const { Text, Title } = Typography
 const { TextArea } = Input
@@ -93,11 +95,33 @@ const sampleQuery = `select chemical_substance->gene->disease
 export const TranQLTab = ({ result }) => {
   const { query } = useHelxSearch()
   const [tranqlQuery, setTranqlQuery] = useState(sampleQuery)
+  const [translatorResponse, setTranslatorResponse] = useState('')
+
+  const fetchGraph = async () => {
+    const config = {
+      headers: {
+        'Content-Type': 'text/plain',
+      }
+    }
+    try {
+      const { data } = await axios.post(`https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=true`, tranqlQuery, config)
+      if (!data) {
+        console.log('no data')
+        return
+      }
+      console.log(data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <Fragment>
       <Title level={ 4 }>TranQL</Title>
       <TextArea className="tranql-query-textarea" value={ tranqlQuery } rows="5" />
+      <Button onClick={ fetchGraph } icon={ <QueryIcon /> } />
+      <Divider />
+      { translatorResponse }
     </Fragment>
   )
 }
