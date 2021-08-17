@@ -53,7 +53,7 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
       onOk={ closeHandler }
       okText="Close"
       onCancel={ closeHandler }
-      width={ 1000 }
+      width={ 1200 }
       style={{ top: 135 }}
       bodyStyle={{ padding: `0`, minHeight: `50vh` }}
       cancelButtonProps={{ hidden: true }}
