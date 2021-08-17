@@ -64,14 +64,14 @@ export const TranQLTab = ({ result }) => {
       <Divider />
       {
         translatorResponse && (
-          <div style={{ backgroundColor: 'var(--color-unc-gray)', height: '100%' }}>
+          <div style={{ backgroundColor: 'var(--color-unc-gray)' }}>
             <ForceGraph2D
               graphData={data}
               nodeLabel="id"
               linkCurvature="curvature"
               enablePointerInteraction={true}
               linkDirectionalParticleWidth={1}
-              height={ 300 }
+              height={ 400 }
               width={ 400 }
             />
           </div>

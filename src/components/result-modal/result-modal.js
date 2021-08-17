@@ -3,6 +3,12 @@ import { Menu, Modal, Space, Typography } from 'antd'
 import './result-modal.css'
 import { useHelxSearch } from '../'
 import { OverviewTab, StudiesTab, KnowledgeGraphsTab, TranQLTab } from './tabs'
+import {
+  InfoCircleOutlined as OverviewIcon,
+  BookOutlined as StudiesIcon,
+  ShareAltOutlined as KnowledgeGraphsIcon,
+  CodeOutlined as TranQLIcon,
+} from '@ant-design/icons'
 
 const { Text, Title } = Typography
 
@@ -34,10 +40,10 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
   }
 
   const tabs = {
-    'overview': { title: 'Overview',         content: <OverviewTab result={ result } />, },
-    'studies':  { title: `Studies`,          content: <StudiesTab studies={ studies } />, },
-    'kgs':      { title: `Knowledge Graphs`, content: <KnowledgeGraphsTab graphs={ graphs } />, },
-    'tranql':   { title: `TranQL`,           content: <TranQLTab /> },
+    'overview': { title: 'Overview',            icon: <OverviewIcon />,         content: <OverviewTab result={ result } />, },
+    'studies':  { title: 'Studies',             icon: <StudiesIcon />,          content: <StudiesTab studies={ studies } />, },
+    'kgs':      { title: 'Knowledge Graphs',    icon: <KnowledgeGraphsIcon />,  content: <KnowledgeGraphsTab graphs={ graphs } />, },
+    'tranql':   { title: 'TranQL',              icon: <TranQLIcon />,           content: <TranQLTab /> },
   }
 
   return (
@@ -47,7 +53,7 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
       onOk={ closeHandler }
       okText="Close"
       onCancel={ closeHandler }
-      width={ 800 }
+      width={ 1000 }
       style={{ top: 135 }}
       bodyStyle={{ padding: `0`, minHeight: `50vh` }}
       cancelButtonProps={{ hidden: true }}
@@ -60,7 +66,7 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
           theme="light"
         >
           {
-            Object.keys(tabs).map(key => <Menu.Item key={ key } onClick={ () => setCurrentTab(key) }>{ tabs[key].title }</Menu.Item>)
+            Object.keys(tabs).map(key => <Menu.Item key={ key } onClick={ () => setCurrentTab(key) }>{ tabs[key].icon } &nbsp; { tabs[key].title }</Menu.Item>)
           }
         </Menu>
         <div className="modal-content-container" children={ tabs[currentTab].content } />
