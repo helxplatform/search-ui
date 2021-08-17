@@ -14,7 +14,6 @@ const { CheckableTag: CheckableFacet } = Tag
 const OverviewTab = ({ result }) => {
   return (
     <Fragment>
-      <Title level={ 4 }>Overview</Title>
       <Text>{ result.description }</Text>
     </Fragment>
   )
@@ -42,7 +41,6 @@ const StudiesTab = ({ studies }) => {
 
   return (
     <Fragment>
-      <Title level={ 4 }>Studies</Title>
       <Space direction="horizontal" size="small">
         {
           facets.map(facet => studies[facet] && (
@@ -82,7 +80,6 @@ const StudiesTab = ({ studies }) => {
 const KnowledgeGraphsTab = ({ graphs }) => {
   return (
     <Fragment>
-      <Title level={ 4 }>Knowledge Graphs</Title>
       <KnowledgeGraphs graphs={ graphs } />
     </Fragment> 
   )
@@ -117,7 +114,6 @@ export const TranQLTab = ({ result }) => {
 
   return (
     <Fragment>
-      <Title level={ 4 }>TranQL</Title>
       <TextArea className="tranql-query-textarea" value={ tranqlQuery } rows="5" />
       <Button onClick={ fetchGraph } icon={ <QueryIcon /> } />
       <Divider />
