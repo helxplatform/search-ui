@@ -9,7 +9,6 @@
 .modal-content-container {
   width: 100%;
   padding: 1rem 2rem 1rem 1rem;
-  max-height: 600px;
   overflow-y:  auto;
   scrollbar-width: thin; /* firefox only */
   scrollbar-color: #00000022 transparent; /* firefox only */

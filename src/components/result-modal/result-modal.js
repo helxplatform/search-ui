@@ -54,7 +54,7 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
     >
       <Space direction="horizontal" align="start">
         <Menu
-          style={{ width: 256, height: '100%' }}
+          style={{ width: 256 }}
           defaultSelectedKeys={ ['overview'] }
           mode="inline"
           theme="light"

@@ -12,56 +12,71 @@ const sampleQuery = `select chemical_substance->gene->disease
  where disease="asthma"`
 
 var data = {
-  nodes: [{ id: "A" }, { id: "B" }, { id: "C" }, { id: "D" }],
+  nodes: [
+           { id: '321' },
+    { id: '231' }, { id: '312' },
+    { id: '132' }, { id: '213' },
+           { id: '123' },
+  ],
   links: [
-    { source: "B", target: "C", value: 8 },
-    { source: "C", target: "D", value: 10 },
-    { source: "D", target: "A", value: 6 },
-    { source: "B", target: "A", value: 6 },
-    { source: "B", target: "D", value: 6 },
+    { source: '123', target: '132', value: 8 },
+    { source: '123', target: '213', value: 10 },
+    { source: '132', target: '231', value: 6 },
+    { source: '132', target: '312', value: 6 },
+    { source: '213', target: '231', value: 6 },
+    { source: '213', target: '312', value: 6 },
+    { source: '231', target: '321', value: 6 },
+    { source: '312', target: '321', value: 6 },
   ]
 };
 
 export const TranQLTab = ({ result }) => {
   const { query } = useHelxSearch()
   const [tranqlQuery, setTranqlQuery] = useState(sampleQuery)
-  const [translatorResponse, setTranslatorResponse] = useState('')
+  const [translatorResponse, setTranslatorResponse] = useState(false)
 
   const fetchGraph = async () => {
-    const headers = {
-      'Content-Type': 'text/plain',
-    }
-    try {
-      const { data } = await axios({
-        method: 'POST',
-        url: 'https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=true',
-        data: JSON.stringify(tranqlQuery),
-        headers,
-      })
-      if (!data) {
-        console.log('no data')
-        return
-      }
-      console.log(data)
-    } catch (error) {
-      console.error(error)
-    }
+    // const headers = {
+    //   'Content-Type': 'text/plain',
+    // }
+    // try {
+    //   const { data } = await axios({
+    //     method: 'POST',
+    //     url: 'https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=true',
+    //     data: JSON.stringify(tranqlQuery),
+    //     headers,
+    //   })
+    //   if (!data) {
+    //     console.log('no data')
+    //     return
+    //   }
+    //   console.log(data)
+    // } catch (error) {
+    //   console.error(error)
+    // }
+    setTranslatorResponse(true)
   }
 
   return (
     <Fragment>
-      <TextArea className="tranql-query-textarea" value={ tranqlQuery } rows="5" />
-      <Button onClick={ fetchGraph } icon={ <QueryIcon /> } />
+      <TextArea className="tranql-query-textarea" value={ tranqlQuery } rows="3" />
+      <Button onClick={ fetchGraph } type="default" block icon={ <QueryIcon rotate={ 90 } style={{ padding: '0 1rem 0 1rem' }} /> } />
       <Divider />
-      <ForceGraph2D
-        graphData={data}
-        nodeLabel="id"
-        linkCurvature="curvature"
-        enablePointerInteraction={true}
-        linkDirectionalParticleWidth={1}
-        height={ 400 }
-        width={ 400 }
-      />
+      {
+        translatorResponse && (
+          <div style={{ backgroundColor: 'var(--color-unc-gray)', height: '100%' }}>
+            <ForceGraph2D
+              graphData={data}
+              nodeLabel="id"
+              linkCurvature="curvature"
+              enablePointerInteraction={true}
+              linkDirectionalParticleWidth={1}
+              height={ 300 }
+              width={ 400 }
+            />
+          </div>
+        )
+      }
     </Fragment>
   )
 }
