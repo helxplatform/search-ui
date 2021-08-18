@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from '../link'
-import { Card, List, Space, Tag, Typography } from 'antd'
+import { Button, Card, List, Space, Tag, Typography } from 'antd'
 import { ExpandOutlined as ViewIcon } from '@ant-design/icons'
 import { KnowledgeGraphs, useHelxSearch } from '../'
 import { OverviewTab } from './overview-tab'
@@ -34,7 +34,7 @@ export const SearchResultCard = ({ index, result, openModalHandler }) => {
         tabProps={{size: 'small'}}
         activeTabKey={currentTab}
         onTabChange={key => setCurrentTab(key)}
-        extra={ <ViewIcon onClick={ openModalHandler } /> }
+        extra={ <Button onClick={ openModalHandler } type="link" icon={ <ViewIcon /> } /> }
         actions={ [<br />] }
       >
         { tabContents[currentTab] }
