@@ -60,13 +60,17 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
     >
       <Space direction="horizontal" align="start">
         <Menu
-          style={{ width: 256 }}
+          className="tab-menu"
           defaultSelectedKeys={ ['overview'] }
           mode="inline"
           theme="light"
         >
           {
-            Object.keys(tabs).map(key => <Menu.Item key={ key } onClick={ () => setCurrentTab(key) }>{ tabs[key].icon } &nbsp; { tabs[key].title }</Menu.Item>)
+            Object.keys(tabs).map(key => (
+              <Menu.Item className="tab-menu-item" key={ key } onClick={ () => setCurrentTab(key) }>
+                <span className="tab-icon">{ tabs[key].icon }</span> &nbsp; <span className="tab-name">{ tabs[key].title }</span>
+              </Menu.Item>
+            ))
           }
         </Menu>
         <div className="modal-content-container" children={ tabs[currentTab].content } />
