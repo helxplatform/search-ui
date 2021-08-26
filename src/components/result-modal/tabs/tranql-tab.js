@@ -1,16 +1,20 @@
 import { Fragment, useState } from 'react'
 import axios from 'axios'
-import { Button, Divider, Input, Spin } from 'antd'
+import { Button, Divider, Input, Spin, Typography } from 'antd'
 import ForceGraph2D from 'react-force-graph-2d'
 import { useHelxSearch } from '../../'
 import { RocketOutlined as QueryIcon } from '@ant-design/icons'
 import { SizeMe } from 'react-sizeme'
 import './tranql-tab.css'
 
+axios.defaults.timeout = 10000 // ten seconds
+
+const { Text } = Typography
 const { TextArea } = Input
 
 export const TranQLTab = ({ result }) => {
   const { query } = useHelxSearch()
+  const [hasSearched, setHasSearched] = useState(false)
   const [tranqlQuery, setTranqlQuery] = useState(`select chemical_substance->gene->disease
   from "/graph/gamma/quick"
  where disease="${ result.name }"`)
@@ -20,6 +24,7 @@ export const TranQLTab = ({ result }) => {
 
   const fetchGraph = async () => {
     setBusy(true)
+    setHasSearched(false)
     const headers = {
       'Content-Type': 'text/plain',
     }
@@ -40,6 +45,7 @@ export const TranQLTab = ({ result }) => {
       console.error(error)
     } finally {
       setBusy(false)
+      setHasSearched(true)
     }
   }
 
@@ -48,6 +54,7 @@ export const TranQLTab = ({ result }) => {
       <TextArea className="tranql-query-textarea" value={ tranqlQuery } rows="3" />
       <Button onClick={ fetchGraph } type="primary" ghost block icon={ <QueryIcon rotate={ 90 } style={{ padding: '0 1rem 0 1rem' }} /> } loading={ busy } />
       <Divider />
+      { hasSearched && !nodes.length && !edges.length && <Text type="warning">no response from tranql query</Text>}
       <SizeMe>
         {
           ({ size }) => (
