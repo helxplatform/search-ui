@@ -19,6 +19,7 @@ export const SearchResults = () => {
   const [layout, setLayout] = useState(GRID)
   const [selectedResultType, setSelectedResultType] = useState(null)
 
+
   const resultTypes = useMemo(() => {
     return [...new Set(results.map(r => r.type))]
   }, [results])
@@ -29,6 +30,12 @@ export const SearchResults = () => {
     }
   }, [resultTypes])
 
+  const filteredResults = useMemo(() => {
+    if (!selectedResultType) {
+      return []
+    }
+    return results.filter(result => result.type === selectedResultType)
+  }, [results, selectedResultType])
 
   const NotifyLinkCopied = () => {
     notification.open({ key: 'key', message: 'Link copied to clipboard'})
@@ -85,11 +92,11 @@ export const SearchResults = () => {
       {
         query && !error.message && (
           <div className="results">
-            { results.length >= 1 && MemoizedResultsHeader }
+            { filteredResults.length >= 1 && MemoizedResultsHeader }
 
             <div className={ layout === GRID ? 'results-list grid' : 'results-list list' }>
               {
-                results.map((result, i) => {
+                filteredResults.map((result, i) => {
                   const index = (currentPage - 1) * perPage + i + 1
                   return (
                     <SearchResultCard
@@ -108,7 +115,7 @@ export const SearchResults = () => {
 
       <br/><br/>
 
-      { pageCount > 1 && <PaginationTray /> }
+      { pageCount > 1 && <PaginationTray count={ filteredResults.length } /> }
 
     </Fragment>
   )
