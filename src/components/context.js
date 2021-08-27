@@ -11,7 +11,7 @@ export const useHelxSearch = () => useContext(HelxSearchContext)
 
 //
 
-const PER_PAGE = 20
+const PER_PAGE = 50
 const tempSearchFacets = [
   'ALL',
   'Biolink',

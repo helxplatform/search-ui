@@ -1,6 +1,6 @@
-import React, { Fragment, useState, useMemo } from 'react'
+import React, { Fragment, useEffect, useState, useMemo } from 'react'
 import { Link } from '../link'
-import { Radio, notification, Spin, Tooltip, Typography } from 'antd'
+import { Button, Radio, notification, Spin, Tooltip, Typography } from 'antd'
 import {
   LinkOutlined as LinkIcon,
   TableOutlined as GridViewIcon,
@@ -17,28 +17,61 @@ const LIST = 'LIST'
 export const SearchResults = () => {
   const { basePath, query, results, totalResults, perPage, currentPage, pageCount, isLoadingResults, error, setSelectedResult } = useHelxSearch()
   const [layout, setLayout] = useState(GRID)
+  const [selectedResultType, setSelectedResultType] = useState(null)
+
+  const resultTypes = useMemo(() => {
+    return [...new Set(results.map(r => r.type))]
+  }, [results])
+
+  useEffect(() => {
+    if (resultTypes.length) {
+      setSelectedResultType(resultTypes[0])
+    }
+  }, [resultTypes])
+
 
   const NotifyLinkCopied = () => {
     notification.open({ key: 'key', message: 'Link copied to clipboard'})
     navigator.clipboard.writeText(window.location.href)
   }
 
+  const handleClickResultType = event => {
+    setSelectedResultType(event.target.innerText)
+  }
+
   const handleChangeLayout = event => setLayout(event.target.value)
 
   const MemoizedResultsHeader = useMemo(() => (
     <div className="header">
-      <Text>{ totalResults } results for "{ query }" ({ pageCount } page{ pageCount > 1 && 's' })</Text> 
-      <Tooltip title="Shareable link" placement="top">
-        <Link to={ `${ basePath }?q=${ query }&p=${ currentPage }` } onClick={NotifyLinkCopied}><LinkIcon /></Link>
-      </Tooltip>
-      <Tooltip title="Toggle Layout" placement="top">
-        <Radio.Group value={ layout } onChange={ handleChangeLayout }>
-          <Radio.Button value={ GRID }><GridViewIcon /></Radio.Button>
-          <Radio.Button value={ LIST }><ListViewIcon /></Radio.Button>
-        </Radio.Group>
-      </Tooltip>
+      <div>
+        <Text>{ totalResults } results for "{ query }" ({ pageCount } page{ pageCount > 1 && 's' })</Text> 
+      </div>
+      <div className="types-list">
+        {
+          resultTypes && resultTypes.map((type, i) => (
+            <Button
+              key={ `type-button-${ type }` }
+              type={ type === selectedResultType ? 'primary' : 'link' }
+              ghost={ type === selectedResultType }
+              onClick={ handleClickResultType }>{ type }</Button>
+          ))
+        }
+      </div>
+      <div>
+        <Tooltip title="Shareable link" placement="top">
+          <Link to={ `${ basePath }?q=${ query }&p=${ currentPage }` } onClick={NotifyLinkCopied}><LinkIcon /></Link>
+        </Tooltip>
+      </div>
+      <div>
+        <Tooltip title="Toggle Layout" placement="top">
+          <Radio.Group value={ layout } onChange={ handleChangeLayout }>
+            <Radio.Button value={ GRID }><GridViewIcon /></Radio.Button>
+            <Radio.Button value={ LIST }><ListViewIcon /></Radio.Button>
+          </Radio.Group>
+        </Tooltip>
+      </div>
     </div>
-  ), [currentPage, layout, pageCount, totalResults, query])
+  ), [currentPage, layout, pageCount, selectedResultType, totalResults, query])
 
   if (isLoadingResults) {
     return <Spin style={{ display: 'block', margin: '4rem' }} />

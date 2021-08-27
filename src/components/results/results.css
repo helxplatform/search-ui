@@ -10,8 +10,10 @@
   gap: 1rem;
 }
 
-.results .header span:first-child {
+.types-list {
   flex: 1;
+  display: flex;
+  gap: 0.5rem;
 }
 
 .results .results-list {
