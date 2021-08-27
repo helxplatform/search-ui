@@ -7,7 +7,7 @@ import { RocketOutlined as QueryIcon } from '@ant-design/icons'
 import { SizeMe } from 'react-sizeme'
 import './tranql-tab.css'
 
-axios.defaults.timeout = 10000 // ten seconds
+axios.defaults.timeout = 20000 // ten seconds
 
 const { Text } = Typography
 const { TextArea } = Input
@@ -15,9 +15,9 @@ const { TextArea } = Input
 export const TranQLTab = ({ result }) => {
   const { query } = useHelxSearch()
   const [hasSearched, setHasSearched] = useState(false)
-  const [tranqlQuery, setTranqlQuery] = useState(`select chemical_substance->gene->disease
+  const [tranqlQuery, setTranqlQuery] = useState(`select gene->disease
   from "/graph/gamma/quick"
- where disease="${ result.name }"`)
+ where disease="${ result.name.toLowerCase() }"`)
   const [busy,setBusy] = useState(false)
   const [nodes, setNodes] = useState([])
   const [edges, setEdges] = useState([])
@@ -31,7 +31,7 @@ export const TranQLTab = ({ result }) => {
     try {
       const { data } = await axios({
         method: 'POST',
-        url: 'https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=true',
+        url: 'https://heal.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=true',
         data: tranqlQuery,
         headers,
       })
