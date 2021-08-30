@@ -1,15 +1,18 @@
 import React, { Fragment, useEffect, useState, useMemo } from 'react'
 import { Link } from '../link'
-import { Button, Radio, notification, Spin, Tooltip, Typography } from 'antd'
+import { Button, Radio, notification, Spin, Menu, Tooltip, Typography } from 'antd'
 import {
   LinkOutlined as LinkIcon,
   TableOutlined as GridViewIcon,
   UnorderedListOutlined as ListViewIcon,
 } from '@ant-design/icons'
 import { PaginationTray, SearchResultCard, SearchResultModal, useHelxSearch } from '../'
+import pluralize from 'pluralize'
+
 import './results.css'
 
 const { Text } = Typography
+const { SubMenu } = Menu
 
 const GRID = 'GRID'
 const LIST = 'LIST'
@@ -42,34 +45,23 @@ export const SearchResults = () => {
     navigator.clipboard.writeText(window.location.href)
   }
 
-  const handleClickResultType = event => {
-    setSelectedResultType(event.target.innerText)
+  const handleClickResultType = type => event => {
+    setSelectedResultType(type)
   }
 
   const handleChangeLayout = event => setLayout(event.target.value)
 
   const MemoizedResultsHeader = useMemo(() => (
     <div className="header">
-      <div>
-        <Text>{ totalResults } results for "{ query }" ({ pageCount } page{ pageCount > 1 && 's' })</Text> 
+      <div className="results-summary">
+        <Text>"{ query }" returned { filteredResults.length } { pluralize(selectedResultType || '') }</Text> 
       </div>
-      <div className="types-list">
-        {
-          resultTypes && resultTypes.map((type, i) => (
-            <Button
-              key={ `type-button-${ type }` }
-              type={ type === selectedResultType ? 'primary' : 'link' }
-              ghost={ type === selectedResultType }
-              onClick={ handleClickResultType }>{ type }</Button>
-          ))
-        }
-      </div>
-      <div>
+      <div className="shareable-link">
         <Tooltip title="Shareable link" placement="top">
-          <Link to={ `${ basePath }?q=${ query }&p=${ currentPage }` } onClick={NotifyLinkCopied}><LinkIcon /></Link>
+          <Link to={ `${ basePath }?q=${ query }&p=${ currentPage }` } onClick={ NotifyLinkCopied }><LinkIcon /></Link>
         </Tooltip>
       </div>
-      <div>
+      <div className="layout-config">
         <Tooltip title="Toggle Layout" placement="top">
           <Radio.Group value={ layout } onChange={ handleChangeLayout }>
             <Radio.Button value={ GRID }><GridViewIcon /></Radio.Button>
@@ -92,6 +84,13 @@ export const SearchResults = () => {
       {
         query && !error.message && (
           <div className="results">
+            <Menu mode="horizontal" className="types-menu" selectedKeys={ [selectedResultType] }>
+              {
+                resultTypes && resultTypes.filter(type => !!type).map((type, i) => (
+                  <Menu.Item key={ type } onClick={ handleClickResultType(type) }>{ pluralize(type) }</Menu.Item>
+                ))
+              }
+            </Menu>
             { filteredResults.length >= 1 && MemoizedResultsHeader }
 
             <div className={ layout === GRID ? 'results-list grid' : 'results-list list' }>
