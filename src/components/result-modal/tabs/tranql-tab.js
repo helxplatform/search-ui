@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import axios from 'axios'
 import { Button, Divider, Input, Spin, Typography } from 'antd'
 import ForceGraph2D from 'react-force-graph-2d'
@@ -14,15 +14,29 @@ const { TextArea } = Input
 
 export const TranQLTab = ({ result }) => {
   const { query } = useHelxSearch()
-  const [hasSearched, setHasSearched] = useState(false)
-  const [tranqlQuery, setTranqlQuery] = useState(`select chemical_substance->gene->disease
+
+  const initialTranqlQuery = useMemo(() => `select gene->disease->chemical_substance
   from "/graph/gamma/quick"
- where ${ result.type }="${ result.name.toLowerCase() }"`)
+ where ${ result.type }="${ result.name.toLowerCase() }"`, [result])
+  const [tranqlQuery, setTranqlQuery] = useState(initialTranqlQuery)
+
+  const [hasSearched, setHasSearched] = useState(false)
   const [busy,setBusy] = useState(false)
+
   const [nodes, setNodes] = useState([])
   const [edges, setEdges] = useState([])
 
-  const fetchGraph = async () => {
+  const handleChangeTranqlQuery = event => {
+    setTranqlQuery(event.target.value)
+  }
+
+  const handlePressEnter = event => {
+    if (event.ctrlKey) {
+      submitTranqlQuery()
+    }
+  }
+
+  const submitTranqlQuery = useCallback(async () => {
     setBusy(true)
     setHasSearched(false)
     const headers = {
@@ -39,20 +53,20 @@ export const TranQLTab = ({ result }) => {
         console.log('no data')
         return
       }
-      setNodes(data.question_graph.nodes)
-      setEdges(data.question_graph.edges.map(edge => ({ source: edge.source_id, target: edge.target_id })))
+      setNodes(data.knowledge_graph.nodes)
+      setEdges(data.knowledge_graph.edges.map(edge => ({ source: edge.source_id, target: edge.target_id })))
     } catch (error) {
       console.error(error)
     } finally {
       setBusy(false)
       setHasSearched(true)
     }
-  }
+  }, [result, tranqlQuery])
 
   return (
     <Fragment>
-      <TextArea className="tranql-query-textarea" value={ tranqlQuery } rows="3" />
-      <Button onClick={ fetchGraph } type="primary" ghost block icon={ <QueryIcon rotate={ 90 } style={{ padding: '0 1rem 0 1rem' }} /> } loading={ busy } />
+      <TextArea className="tranql-query-textarea" value={ tranqlQuery } onChange={ handleChangeTranqlQuery } rows="4" onPressEnter={ handlePressEnter } />
+      <Button onClick={ submitTranqlQuery } type="primary" ghost block icon={ <QueryIcon rotate={ 90 } style={{ padding: '0' }} /> } loading={ busy } />
       <Divider />
       { hasSearched && !nodes.length && !edges.length && <Text type="warning">no response from tranql query</Text>}
       <SizeMe>
