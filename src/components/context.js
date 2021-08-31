@@ -125,7 +125,12 @@ export const HelxSearch = ({ searchURL = 'https://helx.renci.org', basePath = ''
       if (!data || data.result.total_items === 0) {
         return []
       }
-      return data.result.hits.hits.map(graph => graph._source.knowledge_graph.knowledge_graph)
+
+      console.log(data.result.hits.hits)
+
+      return {
+        knowledgeGraphs: data.result.hits.hits.map(graph => graph._source.knowledge_graph.knowledge_graph)
+      }
     } catch (error) {
       console.error(error)
     }

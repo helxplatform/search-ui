@@ -9,8 +9,8 @@ export const KnowledgeGraphsTab = ({ result }) => {
 
   useEffect(() => {
     const getKgs = async () => {
-      const kgs = await fetchGraphs(result.id)
-      setGraphs(kgs)
+      const graphs = await fetchGraphs(result.id)
+      setGraphs(graphs.knowledgeGraphs)
       setLoading(false)
     }
     getKgs()

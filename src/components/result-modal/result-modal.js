@@ -15,7 +15,7 @@ const { Text, Title } = Typography
 export const SearchResultModal = ({ result, visible, closeHandler }) => {
   const [currentTab, setCurrentTab] = useState('overview')
   const { fetchGraphs, fetchStudyVariables, query } = useHelxSearch()
-  const [knowledgeGraphs, setKnowledgeGraphs] = useState([])
+  const [graphs, setGraphs] = useState([])
   const [studies, setStudies] = useState([])
 
   useEffect(() => {
@@ -27,12 +27,12 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
       const { result: data } = await fetchStudyVariables(result.id, query)
       setStudies(data)
     }
-    const getKgs = async () => {
-      const kgs = await fetchGraphs(result.id)
-      setKnowledgeGraphs(kgs)
+    const getGraphs = async () => {
+      const graphs = await fetchGraphs(result.id)
+      setGraphs(graphs)
     }
     getVars()
-    getKgs()
+    getGraphs()
   }, [fetchGraphs, fetchStudyVariables, result, query])
 
   if (!result) {
@@ -42,9 +42,9 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
   const tabs = {
     'overview': { title: 'Overview',            icon: <OverviewIcon />,         content: <OverviewTab result={ result } />, },
     'studies':  { title: 'Studies',             icon: <StudiesIcon />,          content: <StudiesTab studies={ studies } />, },
-    'kgs':      { title: 'Knowledge Graphs',    icon: <KnowledgeGraphsIcon />,  content: <KnowledgeGraphsTab graphs={ knowledgeGraphs } />, },
+    'kgs':      { title: 'Knowledge Graphs',    icon: <KnowledgeGraphsIcon />,  content: <KnowledgeGraphsTab graphs={ graphs.knowledgeGraphs } />, },
     'tranql':   { title: 'TranQL',              icon: <TranQLIcon />,           content: <TranQLTab />, },
-    'qgs':      { title: 'Question Graphs',     icon: <KnowledgeGraphsIcon />,  content: <QuestionGraphsTab graphs={ knowledgeGraphs } />, },
+    'qgs':      { title: 'Question Graphs',     icon: <KnowledgeGraphsIcon />,  content: <QuestionGraphsTab graphs={ graphs.knowledgeGraphs } />, },
   }
 
   return (
