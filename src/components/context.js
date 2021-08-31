@@ -126,10 +126,11 @@ export const HelxSearch = ({ searchURL = 'https://helx.renci.org', basePath = ''
         return []
       }
 
-      console.log(data.result.hits.hits)
+      console.log(data)
 
       return {
-        knowledgeGraphs: data.result.hits.hits.map(graph => graph._source.knowledge_graph.knowledge_graph)
+        knowledgeGraphs: data.result.hits.hits.map(graph => graph._source.knowledge_graph.knowledge_graph),
+        questionGraphs: [],
       }
     } catch (error) {
       console.error(error)
