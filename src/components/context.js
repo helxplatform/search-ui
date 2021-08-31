@@ -114,7 +114,7 @@ export const HelxSearch = ({ searchURL = 'https://helx.renci.org', basePath = ''
     setPageCount(Math.ceil(totalResults / PER_PAGE))
   }, [totalResults])
 
-  const fetchKnowledgeGraphs = useCallback(async (tag_id) => {
+  const fetchGraphs = useCallback(async (tag_id) => {
     try {
       const { data } =  await axios.post(`${searchURL}/search_kg`, {
         index: 'kg_index',
@@ -161,7 +161,7 @@ export const HelxSearch = ({ searchURL = 'https://helx.renci.org', basePath = ''
 
   return (
     <HelxSearchContext.Provider value={{
-      query, setQuery, doSearch, fetchKnowledgeGraphs, fetchStudyVariables, inputRef,
+      query, setQuery, doSearch, fetchGraphs, fetchStudyVariables, inputRef,
       error, isLoadingResults,
       results, totalResults,
       currentPage, setCurrentPage, perPage: PER_PAGE, pageCount,

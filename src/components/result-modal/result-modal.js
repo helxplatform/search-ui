@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Menu, Modal, Space, Typography } from 'antd'
 import './result-modal.css'
 import { useHelxSearch } from '../'
-import { OverviewTab, StudiesTab, KnowledgeGraphsTab, TranQLTab } from './tabs'
+import { OverviewTab, StudiesTab, KnowledgeGraphsTab, QuestionGraphsTab, TranQLTab } from './tabs'
 import {
   InfoCircleOutlined as OverviewIcon,
   BookOutlined as StudiesIcon,
@@ -14,8 +14,8 @@ const { Text, Title } = Typography
 
 export const SearchResultModal = ({ result, visible, closeHandler }) => {
   const [currentTab, setCurrentTab] = useState('overview')
-  const { fetchKnowledgeGraphs, fetchStudyVariables, query } = useHelxSearch()
-  const [graphs, setGraphs] = useState([])
+  const { fetchGraphs, fetchStudyVariables, query } = useHelxSearch()
+  const [knowledgeGraphs, setKnowledgeGraphs] = useState([])
   const [studies, setStudies] = useState([])
 
   useEffect(() => {
@@ -28,12 +28,12 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
       setStudies(data)
     }
     const getKgs = async () => {
-      const kgs = await fetchKnowledgeGraphs(result.id)
-      setGraphs(kgs)
+      const kgs = await fetchGraphs(result.id)
+      setKnowledgeGraphs(kgs)
     }
     getVars()
     getKgs()
-  }, [fetchKnowledgeGraphs, fetchStudyVariables, result, query])
+  }, [fetchGraphs, fetchStudyVariables, result, query])
 
   if (!result) {
     return null
@@ -42,8 +42,9 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
   const tabs = {
     'overview': { title: 'Overview',            icon: <OverviewIcon />,         content: <OverviewTab result={ result } />, },
     'studies':  { title: 'Studies',             icon: <StudiesIcon />,          content: <StudiesTab studies={ studies } />, },
-    'kgs':      { title: 'Knowledge Graphs',    icon: <KnowledgeGraphsIcon />,  content: <KnowledgeGraphsTab graphs={ graphs } />, },
-    'tranql':   { title: 'TranQL',              icon: <TranQLIcon />,           content: <TranQLTab /> },
+    'kgs':      { title: 'Knowledge Graphs',    icon: <KnowledgeGraphsIcon />,  content: <KnowledgeGraphsTab graphs={ knowledgeGraphs } />, },
+    'tranql':   { title: 'TranQL',              icon: <TranQLIcon />,           content: <TranQLTab />, },
+    'qgs':      { title: 'Question Graphs',     icon: <KnowledgeGraphsIcon />,  content: <QuestionGraphsTab graphs={ knowledgeGraphs } />, },
   }
 
   return (
