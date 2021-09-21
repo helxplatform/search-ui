@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import { Menu, Modal, Space, Typography } from 'antd'
 import './result-modal.css'
 import { useHelxSearch } from '../'
-import { OverviewTab, StudiesTab, KnowledgeGraphsTab, TranQLTab } from './tabs'
+import { OverviewTab, StudiesTab, KnowledgeGraphsTab, TranQLTab, AnswerViewerTab } from './tabs'
 import {
   InfoCircleOutlined as OverviewIcon,
   BookOutlined as StudiesIcon,
   ShareAltOutlined as KnowledgeGraphsIcon,
   CodeOutlined as TranQLIcon,
+  QuestionOutlined as AnswerViewerIcon,
 } from '@ant-design/icons'
 
 const { Text, Title } = Typography
@@ -40,10 +41,11 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
   }
 
   const tabs = {
-    'overview': { title: 'Overview',            icon: <OverviewIcon />,         content: <OverviewTab result={ result } />, },
-    'studies':  { title: 'Studies',             icon: <StudiesIcon />,          content: <StudiesTab studies={ studies } />, },
-    'kgs':      { title: 'Knowledge Graphs',    icon: <KnowledgeGraphsIcon />,  content: <KnowledgeGraphsTab graphs={ graphs } />, },
-    'tranql':   { title: 'TranQL',              icon: <TranQLIcon />,           content: <TranQLTab result={ result } /> },
+    'overview':      { title: 'Overview',            icon: <OverviewIcon />,         content: <OverviewTab result={ result } />, },
+    'studies':       { title: 'Studies',             icon: <StudiesIcon />,          content: <StudiesTab studies={ studies } />, },
+    'kgs':           { title: 'Knowledge Graphs',    icon: <KnowledgeGraphsIcon />,  content: <KnowledgeGraphsTab graphs={ graphs } />, },
+    'tranql':        { title: 'TranQL',              icon: <TranQLIcon />,           content: <TranQLTab result={ result } /> },
+    'answer-viewer': { title: 'Answer Viewer',       icon: <AnswerViewerIcon />,     content: <AnswerViewerTab result={ result } /> },
   }
 
   return (
