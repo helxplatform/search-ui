@@ -116,7 +116,7 @@ export const HelxSearch = ({ searchURL = 'https://helx.renci.org', basePath = ''
 
   const fetchGraphs = useCallback(async (tag_id) => {
     try {
-      const { data } =  await axios.post(`${searchURL}/search_kg`, {
+      const { data } =  await axios.post(`${ searchURL }/search_kg`, {
         index: 'kg_index',
         unique_id: tag_id,
         query: query,
@@ -125,12 +125,13 @@ export const HelxSearch = ({ searchURL = 'https://helx.renci.org', basePath = ''
       if (!data || data.result.total_items === 0) {
         return []
       }
-
-      console.log(data)
-
+      console.log({
+        knowledge: data.result.hits.hits.map(graph => graph._source.knowledge_graph.knowledge_graph),
+        question: data.result.hits.hits.map(graph => graph._source.knowledge_graph.question_graph),
+      })
       return {
-        knowledgeGraphs: data.result.hits.hits.map(graph => graph._source.knowledge_graph.knowledge_graph),
-        questionGraphs: [],
+        knowledge: data.result.hits.hits.map(graph => graph._source.knowledge_graph.knowledge_graph),
+        question: data.result.hits.hits.map(graph => graph._source.knowledge_graph.question_graph),
       }
     } catch (error) {
       console.error(error)

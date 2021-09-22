@@ -8,6 +8,7 @@ import {
   BookOutlined as StudiesIcon,
   ShareAltOutlined as KnowledgeGraphsIcon,
   CodeOutlined as TranQLIcon,
+  QuestionCircleOutlined as QuestionGraphsIcon,
 } from '@ant-design/icons'
 
 const { Text, Title } = Typography
@@ -42,9 +43,9 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
   const tabs = {
     'overview': { title: 'Overview',            icon: <OverviewIcon />,         content: <OverviewTab result={ result } />, },
     'studies':  { title: 'Studies',             icon: <StudiesIcon />,          content: <StudiesTab studies={ studies } />, },
-    'kgs':      { title: 'Knowledge Graphs',    icon: <KnowledgeGraphsIcon />,  content: <KnowledgeGraphsTab graphs={ graphs.knowledgeGraphs } />, },
+    'kgs':      { title: 'Knowledge Graphs',    icon: <KnowledgeGraphsIcon />,  content: <KnowledgeGraphsTab graphs={ graphs.knowledge } />, },
     'tranql':   { title: 'TranQL',              icon: <TranQLIcon />,           content: <TranQLTab />, },
-    'qgs':      { title: 'Question Graphs',     icon: <KnowledgeGraphsIcon />,  content: <QuestionGraphsTab graphs={ graphs.knowledgeGraphs } />, },
+    'qgs':      { title: 'Question Graphs',     icon: <QuestionGraphsIcon />,   content: <QuestionGraphsTab graphs={ graphs.question } />, },
   }
 
   return (
