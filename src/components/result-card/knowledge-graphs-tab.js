@@ -3,18 +3,18 @@ import { Space, Spin } from 'antd'
 import { KnowledgeGraphs, useHelxSearch } from '../'
 
 export const KnowledgeGraphsTab = ({ result }) => {
-  const { query, fetchKnowledgeGraphs } = useHelxSearch()
+  const { query, fetchGraphs } = useHelxSearch()
   const [graphs, setGraphs] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const getKgs = async () => {
-      const kgs = await fetchKnowledgeGraphs(result.id)
-      setGraphs(kgs)
+      const graphs = await fetchGraphs(result.id)
+      setGraphs(graphs.knowledgeGraphs)
       setLoading(false)
     }
     getKgs()
-  }, [fetchKnowledgeGraphs, query])
+  }, [fetchGraphs, query])
 
   if (loading) {
     return <Spin />

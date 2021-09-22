@@ -11,7 +11,7 @@ export const useHelxSearch = () => useContext(HelxSearchContext)
 
 //
 
-const PER_PAGE = 20
+const PER_PAGE = 50
 const tempSearchFacets = [
   'ALL',
   'Biolink',
@@ -114,9 +114,9 @@ export const HelxSearch = ({ searchURL = 'https://helx.renci.org', basePath = ''
     setPageCount(Math.ceil(totalResults / PER_PAGE))
   }, [totalResults])
 
-  const fetchKnowledgeGraphs = useCallback(async (tag_id) => {
+  const fetchGraphs = useCallback(async (tag_id) => {
     try {
-      const { data } =  await axios.post(`${searchURL}/search_kg`, {
+      const { data } =  await axios.post(`${ searchURL }/search_kg`, {
         index: 'kg_index',
         unique_id: tag_id,
         query: query,
@@ -125,7 +125,14 @@ export const HelxSearch = ({ searchURL = 'https://helx.renci.org', basePath = ''
       if (!data || data.result.total_items === 0) {
         return []
       }
-      return data.result.hits.hits.map(graph => graph._source.knowledge_graph.knowledge_graph)
+      console.log({
+        knowledge: data.result.hits.hits.map(graph => graph._source.knowledge_graph.knowledge_graph),
+        question: data.result.hits.hits.map(graph => graph._source.knowledge_graph.question_graph),
+      })
+      return {
+        knowledge: data.result.hits.hits.map(graph => graph._source.knowledge_graph.knowledge_graph),
+        question: data.result.hits.hits.map(graph => graph._source.knowledge_graph.question_graph),
+      }
     } catch (error) {
       console.error(error)
     }
@@ -161,7 +168,7 @@ export const HelxSearch = ({ searchURL = 'https://helx.renci.org', basePath = ''
 
   return (
     <HelxSearchContext.Provider value={{
-      query, setQuery, doSearch, fetchKnowledgeGraphs, fetchStudyVariables, inputRef,
+      query, setQuery, doSearch, fetchGraphs, fetchStudyVariables, inputRef,
       error, isLoadingResults,
       results, totalResults,
       currentPage, setCurrentPage, perPage: PER_PAGE, pageCount,

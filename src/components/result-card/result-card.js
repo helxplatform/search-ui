@@ -29,11 +29,11 @@ export const SearchResultCard = ({ index, result, openModalHandler }) => {
     <Fragment>
       <Card
         className="result-card"
-        title={`${result.name} (${result.type})`}
-        tabList={tabList}
-        tabProps={{size: 'small'}}
-        activeTabKey={currentTab}
-        onTabChange={key => setCurrentTab(key)}
+        title={ result.name }
+        tabList={ tabList }
+        tabProps={{ size: 'small' }}
+        activeTabKey={ currentTab }
+        onTabChange={ key => setCurrentTab(key) }
         extra={ <Button onClick={ openModalHandler } type="link" icon={ <ViewIcon /> } /> }
         actions={ [<br />] }
       >
