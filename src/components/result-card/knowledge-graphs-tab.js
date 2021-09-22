@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Space, Spin } from 'antd'
-import { KnowledgeGraphs, useHelxSearch } from '../'
+import { useHelxSearch } from '../'
+import { KnowledgeGraphs } from '../graphs'
 
 export const KnowledgeGraphsTab = ({ result }) => {
   const { query, fetchGraphs } = useHelxSearch()
@@ -10,7 +11,7 @@ export const KnowledgeGraphsTab = ({ result }) => {
   useEffect(() => {
     const getKgs = async () => {
       const graphs = await fetchGraphs(result.id)
-      setGraphs(graphs.knowledgeGraphs)
+      setGraphs(graphs.knowledge)
       setLoading(false)
     }
     getKgs()

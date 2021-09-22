@@ -50,7 +50,8 @@ const NoKnowledgeGraphsMessage = () => {
 }
 
 export const KnowledgeGraphs = ({ graphs }) => {
-  if (graphs.length) {
+  console.log('in kg', graphs)
+  if (graphs && graphs.length > 0) {
     return (
       <div className="interactions-grid">
         <div className="column-title">Ontological Term)</div>
