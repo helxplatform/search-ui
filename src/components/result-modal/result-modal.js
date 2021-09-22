@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react'
 import { Menu, Modal, Space, Typography } from 'antd'
 import './result-modal.css'
 import { useHelxSearch } from '../'
-import { OverviewTab, StudiesTab, KnowledgeGraphsTab, QuestionGraphsTab, TranQLTab } from './tabs'
+import { OverviewTab, StudiesTab, KnowledgeGraphsTab, TranQLTab, QuestionGraphsTab, AnswerViewerTab } from './tabs'
 import {
   InfoCircleOutlined as OverviewIcon,
   BookOutlined as StudiesIcon,
   ShareAltOutlined as KnowledgeGraphsIcon,
   CodeOutlined as TranQLIcon,
   QuestionCircleOutlined as QuestionGraphsIcon,
+  QuestionOutlined as AnswerViewerIcon,
 } from '@ant-design/icons'
 
 const { Text, Title } = Typography
@@ -41,11 +42,12 @@ export const SearchResultModal = ({ result, visible, closeHandler }) => {
   }
 
   const tabs = {
-    'overview': { title: 'Overview',            icon: <OverviewIcon />,         content: <OverviewTab result={ result } />, },
-    'studies':  { title: 'Studies',             icon: <StudiesIcon />,          content: <StudiesTab studies={ studies } />, },
-    'kgs':      { title: 'Knowledge Graphs',    icon: <KnowledgeGraphsIcon />,  content: <KnowledgeGraphsTab graphs={ graphs.knowledge } />, },
-    'tranql':   { title: 'TranQL',              icon: <TranQLIcon />,           content: <TranQLTab />, },
-    'qgs':      { title: 'Question Graphs',     icon: <QuestionGraphsIcon />,   content: <QuestionGraphsTab graphs={ graphs.question } />, },
+    'overview':      { title: 'Overview',            icon: <OverviewIcon />,         content: <OverviewTab result={ result } />, },
+    'studies':       { title: 'Studies',             icon: <StudiesIcon />,          content: <StudiesTab studies={ studies } />, },
+    'kgs':           { title: 'Knowledge Graphs',    icon: <KnowledgeGraphsIcon />,  content: <KnowledgeGraphsTab graphs={ graphs.knowledge } />, },
+    'qgs':           { title: 'Question Graphs',     icon: 'Q',                      content: <QuestionGraphsTab graphs={ graphs.question } />, },
+    'answer-viewer': { title: 'Answer Viewer',       icon: 'A',                      content: <AnswerViewerTab result={ result } /> },
+    'tranql':        { title: 'TranQL',              icon: <TranQLIcon />,           content: <TranQLTab result={ result } />, },
   }
 
   return (

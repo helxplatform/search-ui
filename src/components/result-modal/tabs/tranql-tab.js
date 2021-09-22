@@ -1,82 +1,98 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import axios from 'axios'
-import { Button, Divider, Input } from 'antd'
+import { Button, Divider, Input, Spin, Typography } from 'antd'
 import ForceGraph2D from 'react-force-graph-2d'
 import { useHelxSearch } from '../../'
+import { Link } from '../../link'
 import { RocketOutlined as QueryIcon } from '@ant-design/icons'
+import { SizeMe } from 'react-sizeme'
+import './tranql-tab.css'
 
+axios.defaults.timeout = 30000
+
+const { Text } = Typography
 const { TextArea } = Input
-
-const sampleQuery = `select chemical_substance->gene->disease
-  from "/graph/gamma/quick"
- where disease="asthma"`
-
-var data = {
-  nodes: [
-           { id: '321' },
-    { id: '231' }, { id: '312' },
-    { id: '132' }, { id: '213' },
-           { id: '123' },
-  ],
-  links: [
-    { source: '123', target: '132', value: 8 },
-    { source: '123', target: '213', value: 10 },
-    { source: '132', target: '231', value: 6 },
-    { source: '132', target: '312', value: 6 },
-    { source: '213', target: '231', value: 6 },
-    { source: '213', target: '312', value: 6 },
-    { source: '231', target: '321', value: 6 },
-    { source: '312', target: '321', value: 6 },
-  ]
-};
 
 export const TranQLTab = ({ result }) => {
   const { query } = useHelxSearch()
-  const [tranqlQuery, setTranqlQuery] = useState(sampleQuery)
-  const [translatorResponse, setTranslatorResponse] = useState(false)
 
-  const fetchGraph = async () => {
-    // const headers = {
-    //   'Content-Type': 'text/plain',
-    // }
-    // try {
-    //   const { data } = await axios({
-    //     method: 'POST',
-    //     url: 'https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=true',
-    //     data: JSON.stringify(tranqlQuery),
-    //     headers,
-    //   })
-    //   if (!data) {
-    //     console.log('no data')
-    //     return
-    //   }
-    //   console.log(data)
-    // } catch (error) {
-    //   console.error(error)
-    // }
-    setTranslatorResponse(true)
+  const initialTranqlQuery = useMemo(() => `select gene->disease
+  from "/graph/gamma/quick"
+ where ${ result.type }="${ result.name.toLowerCase() }"`, [result])
+  const [tranqlQuery, setTranqlQuery] = useState(initialTranqlQuery)
+
+  const [hasSearched, setHasSearched] = useState(false)
+  const [busy,setBusy] = useState(false)
+
+  const [nodes, setNodes] = useState([])
+  const [edges, setEdges] = useState([])
+
+  const handleChangeTranqlQuery = event => {
+    setTranqlQuery(event.target.value)
   }
+
+  const handlePressEnter = event => {
+    if (event.ctrlKey) {
+      submitTranqlQuery()
+    }
+  }
+
+  const submitTranqlQuery = useCallback(async () => {
+    setBusy(true)
+    setHasSearched(false)
+    const headers = {
+      'Content-Type': 'text/plain',
+    }
+    try {
+      const { data } = await axios({
+        method: 'POST',
+        url: 'https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=true',
+        data: tranqlQuery,
+        headers,
+      })
+      if (!data) {
+        console.log('no data')
+        return
+      }
+      setNodes(data.knowledge_graph.nodes)
+      setEdges(data.knowledge_graph.edges.map(edge => ({ source: edge.source_id, target: edge.target_id })))
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setBusy(false)
+      setHasSearched(true)
+    }
+  }, [result, tranqlQuery])
 
   return (
     <Fragment>
-      <TextArea className="tranql-query-textarea" value={ tranqlQuery } rows="3" />
-      <Button onClick={ fetchGraph } type="default" block icon={ <QueryIcon rotate={ 90 } style={{ padding: '0 1rem 0 1rem' }} /> } />
+      <TextArea className="tranql-query-textarea" value={ tranqlQuery } onChange={ handleChangeTranqlQuery } rows="4" onPressEnter={ handlePressEnter } />
+      
+      <Button onClick={ submitTranqlQuery } type="primary" ghost block icon={ <QueryIcon rotate={ 90 } style={{ padding: '0' }} /> } loading={ busy } />
+      
+      <br /><br />
+      <Link to={ `https://heal.renci.org/tranql/?q=${ encodeURI(tranqlQuery) }` }>View in TranQL</Link>
+      <br />
+      
       <Divider />
-      {
-        translatorResponse && (
-          <div style={{ backgroundColor: 'var(--color-unc-gray)' }}>
+      
+      { hasSearched && !nodes.length && !edges.length && <Text type="warning">no response from tranql query</Text>}
+      
+      <SizeMe>
+        {
+          ({ size }) => (
             <ForceGraph2D
-              graphData={data}
+              height={ 575 }
+              width={ size.width }
+              graphData={{ nodes: nodes, links: edges }}
               nodeLabel="id"
-              linkCurvature="curvature"
-              enablePointerInteraction={true}
-              linkDirectionalParticleWidth={1}
-              height={ 400 }
-              width={ 400 }
+              linkColor={ () => 'rgba(0,0,0,0.2)' }
+              enablePointerInteraction={ true }
+              d3VelocityDecay={ 0.25 }
             />
-          </div>
-        )
-      }
+          )
+        }
+      </SizeMe>
     </Fragment>
   )
 }
