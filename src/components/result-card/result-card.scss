@@ -1,3 +1,17 @@
+.result-card {
+  cursor: pointer;
+  button {
+    filter: opacity(0.25) !important;
+    transform: scale(0.5);
+  }
+  &:hover {
+    button {
+      filter: opacity(1.0) !important;
+      transform: scale(1.0);
+    }
+  }
+}
+
 .ant-list-items {
   width: 100%;
 }
