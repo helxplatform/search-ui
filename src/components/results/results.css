@@ -42,7 +42,6 @@
 }
 
 .results .results-list .result-card .ant-card-body {
-  min-height: 200px;
   max-height: 200px;
   overflow: hidden;
   position: relative;
@@ -50,6 +49,16 @@
   scrollbar-width: thin; /* firefox only */
   scrollbar-color: transparent transparent; /* firefox only */
   transition: scrollbar-color 250ms; /* firefox only */
+}
+
+.results .results-list.list .result-card .ant-card-body {
+  min-height: unset;
+  max-height: 300px;
+}
+
+.results .results-list.grid .result-card .ant-card-body {
+  min-height: 200px;
+  max-height: 200px;
 }
 
 .results .results-list .result-card .ant-card-body:hover {
