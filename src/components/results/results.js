@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState, useMemo } from 'react'
 import { Link } from '../link'
 import { Button, Radio, notification, Spin, Menu, Tooltip, Typography } from 'antd'
 import {
+  CopyOutlined as CopyIcon,
   LinkOutlined as LinkIcon,
   TableOutlined as GridViewIcon,
   UnorderedListOutlined as ListViewIcon,
@@ -18,7 +19,7 @@ const GRID = 'GRID'
 const LIST = 'LIST'
 
 export const SearchResults = () => {
-  const { basePath, query, results, totalResults, perPage, currentPage, pageCount, isLoadingResults, error, setSelectedResult } = useHelxSearch()
+  const { basePath, query, results, perPage, currentPage, pageCount, isLoadingResults, error, setSelectedResult } = useHelxSearch()
   const [layout, setLayout] = useState(GRID)
   const [selectedResultType, setSelectedResultType] = useState(null)
 
@@ -41,7 +42,13 @@ export const SearchResults = () => {
   }, [results, selectedResultType])
 
   const NotifyLinkCopied = () => {
-    notification.open({ key: 'key', message: 'Link copied to clipboard'})
+    notification.open({
+      key: 'link-copied-notificiation',
+      message: 'Link copied!',
+      description: 'The URL linking to these results has been copied to your clipboard.',
+      placement: 'bottomRight',
+      icon: <CopyIcon />,
+    })
     navigator.clipboard.writeText(window.location.href)
   }
 
@@ -70,7 +77,7 @@ export const SearchResults = () => {
         </Tooltip>
       </div>
     </div>
-  ), [currentPage, layout, pageCount, selectedResultType, totalResults, query])
+  ), [basePath, currentPage, layout, selectedResultType, query])
 
   if (isLoadingResults) {
     return <Spin style={{ display: 'block', margin: '4rem' }} />

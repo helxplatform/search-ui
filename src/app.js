@@ -7,7 +7,7 @@ const { Content, Header } = Layout
 
 const config = {
   searchURL: 'https://helx.renci.org',
-  basePath: '',
+  basePath: '/',
 }
 
 const SemanticSearch = () => {

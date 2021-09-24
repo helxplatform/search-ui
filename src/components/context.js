@@ -168,6 +168,7 @@ export const HelxSearch = ({ searchURL = 'https://helx.renci.org', basePath = ''
 
   return (
     <HelxSearchContext.Provider value={{
+      basePath,
       query, setQuery, doSearch, fetchGraphs, fetchStudyVariables, inputRef,
       error, isLoadingResults,
       results, totalResults,
